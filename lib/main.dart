@@ -1,11 +1,9 @@
-import 'package:bytebank_persistency/network/web_client.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/dashboard.dart';
 
 void main() {
   runApp(ByteBank());
-  findAll();
 }
 
 class ByteBank extends StatelessWidget {
