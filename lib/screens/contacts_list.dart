@@ -1,6 +1,7 @@
 import 'package:bytebank_persistency/database/dao/contact_dao.dart';
 import 'package:bytebank_persistency/models/contact.dart';
 import 'package:bytebank_persistency/screens/contact_form.dart';
+import 'package:bytebank_persistency/widgets/progress.dart';
 import 'package:flutter/material.dart';
 
 class ContactsList extends StatefulWidget {
@@ -26,16 +27,7 @@ class _ContactsListState extends State<ContactsList> {
             case ConnectionState.none:
               break;
             case ConnectionState.waiting:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    CircularProgressIndicator(),
-                    Text('Loading'),
-                  ],
-                ),
-              );
+              return Progress();
               break;
             case ConnectionState.active:
               break;
