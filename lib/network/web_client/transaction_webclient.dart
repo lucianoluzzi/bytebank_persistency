@@ -14,10 +14,10 @@ class TransactionWebClient {
         .toList();
   }
 
-  Future<Transaction> save(Transaction transaction) async {
+  Future<Transaction> save(String password, Transaction transaction) async {
     final Response response = await client.post(
       baseUrl,
-      headers: {'Content-type': 'application/json', 'password': '1000'},
+      headers: {'Content-type': 'application/json', 'password': password},
       body: jsonEncode(transaction.toJson()),
     );
 

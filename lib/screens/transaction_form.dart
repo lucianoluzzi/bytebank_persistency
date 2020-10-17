@@ -1,6 +1,7 @@
 import 'package:bytebank_persistency/models/contact.dart';
 import 'package:bytebank_persistency/models/transaction.dart';
 import 'package:bytebank_persistency/network/web_client/transaction_webclient.dart';
+import 'package:bytebank_persistency/widgets/transaction_auth_dialog.dart';
 import 'package:flutter/material.dart';
 
 class TransactionForm extends StatefulWidget {
@@ -64,11 +65,15 @@ class _TransactionFormState extends State<TransactionForm> {
                           double.tryParse(_valueController.text);
                       final transactionCreated =
                           Transaction(value, widget.contact);
-                      _transactionWebClient
-                          .save(transactionCreated)
-                          .then((transaction) {
-                        Navigator.pop(context);
-                      });
+
+                      showDialog(
+                          context: context,
+                          builder: (dialogContext) => TransactionAuthDialog(
+                                onConfirm: (String password) {
+                                  _saveTransaction(
+                                      password, transactionCreated, context);
+                                },
+                              ));
                     },
                   ),
                 ),
@@ -77,6 +82,18 @@ class _TransactionFormState extends State<TransactionForm> {
           ),
         ),
       ),
+    );
+  }
+
+  void _saveTransaction(
+    String password,
+    Transaction transactionCreated,
+    BuildContext context,
+  ) async {
+    _transactionWebClient.save(password, transactionCreated).then(
+      (transaction) {
+        Navigator.pop(context);
+      },
     );
   }
 }
