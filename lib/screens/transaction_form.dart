@@ -24,75 +24,69 @@ class _TransactionFormState extends State<TransactionForm> {
       appBar: AppBar(
         title: Text('New transaction'),
       ),
-      body: Builder(
-        builder: (BuildContext builderContext) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    widget.contact.name,
-                    style: TextStyle(
-                      fontSize: 24.0,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      widget.contact.accountNumber.toString(),
-                      style: TextStyle(
-                        fontSize: 32.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: TextField(
-                      controller: _valueController,
-                      style: TextStyle(fontSize: 24.0),
-                      decoration: InputDecoration(labelText: 'Value'),
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: SizedBox(
-                      width: double.maxFinite,
-                      child: RaisedButton(
-                        child: Text('Transfer'),
-                        onPressed: () {
-                          final double value =
-                              double.tryParse(_valueController.text);
-                          final transactionCreated =
-                              Transaction(value, widget.contact);
-
-                          showDialog(
-                              context: context,
-                              builder: (dialogContext) {
-                                return TransactionAuthDialog(
-                                  onConfirm: (String password) {
-                                    _saveTransaction(
-                                      password,
-                                      transactionCreated,
-                                      context,
-                                      builderContext,
-                                    );
-                                  },
-                                );
-                              });
-                        },
-                      ),
-                    ),
-                  )
-                ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                widget.contact.name,
+                style: TextStyle(
+                  fontSize: 24.0,
+                ),
               ),
-            ),
-          );
-        },
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text(
+                  widget.contact.accountNumber.toString(),
+                  style: TextStyle(
+                    fontSize: 32.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: TextField(
+                  controller: _valueController,
+                  style: TextStyle(fontSize: 24.0),
+                  decoration: InputDecoration(labelText: 'Value'),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: SizedBox(
+                  width: double.maxFinite,
+                  child: RaisedButton(
+                    child: Text('Transfer'),
+                    onPressed: () {
+                      final double value =
+                          double.tryParse(_valueController.text);
+                      final transactionCreated =
+                          Transaction(value, widget.contact);
+
+                      showDialog(
+                          context: context,
+                          builder: (dialogContext) {
+                            return TransactionAuthDialog(
+                              onConfirm: (String password) {
+                                _saveTransaction(
+                                  password,
+                                  transactionCreated,
+                                  context,
+                                );
+                              },
+                            );
+                          });
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -101,7 +95,6 @@ class _TransactionFormState extends State<TransactionForm> {
     String password,
     Transaction transactionCreated,
     BuildContext context,
-    BuildContext childContext,
   ) async {
     final Transaction transaction = await _transactionWebClient
         .save(password, transactionCreated)
