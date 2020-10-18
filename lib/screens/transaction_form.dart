@@ -5,6 +5,7 @@ import 'package:bytebank_persistency/models/transaction.dart';
 import 'package:bytebank_persistency/network/http_exception.dart';
 import 'package:bytebank_persistency/network/web_client/transaction_webclient.dart';
 import 'package:bytebank_persistency/screens/response_dialog.dart';
+import 'package:bytebank_persistency/widgets/progress.dart';
 import 'package:bytebank_persistency/widgets/transaction_auth_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -23,6 +24,8 @@ class _TransactionFormState extends State<TransactionForm> {
   final TextEditingController _valueController = TextEditingController();
   final TransactionWebClient _transactionWebClient = TransactionWebClient();
 
+  bool _sending = false;
+
   @override
   Widget build(BuildContext context) {
     print('UUID: $_transactionId');
@@ -36,6 +39,12 @@ class _TransactionFormState extends State<TransactionForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Visibility(
+                visible: _sending,
+                child: Progress(
+                  message: 'Sending...',
+                ),
+              ),
               Text(
                 widget.contact.name,
                 style: TextStyle(
@@ -113,6 +122,9 @@ class _TransactionFormState extends State<TransactionForm> {
 
   Future _showSuccessfulMessage(
       Transaction transaction, BuildContext context) async {
+    setState(() {
+      _sending = false;
+    });
     if (transaction != null) {
       Navigator.pop(context, 'Successful transaction!');
     }
@@ -122,7 +134,11 @@ class _TransactionFormState extends State<TransactionForm> {
       BuildContext context) async {
     final Transaction transaction = await _transactionWebClient
         .save(password, transactionCreated)
-        .catchError((e) {
+        .whenComplete(() {
+      setState(() {
+        _sending = false;
+      });
+    }).catchError((e) {
       _showFailureMessage(context, message: e.message);
     }, test: (e) => e is HttpException).catchError((e) {
       _showFailureMessage(context,
