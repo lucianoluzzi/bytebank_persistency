@@ -24,64 +24,75 @@ class _TransactionFormState extends State<TransactionForm> {
       appBar: AppBar(
         title: Text('New transaction'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                widget.contact.name,
-                style: TextStyle(
-                  fontSize: 24.0,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Text(
-                  widget.contact.accountNumber.toString(),
-                  style: TextStyle(
-                    fontSize: 32.0,
-                    fontWeight: FontWeight.bold,
+      body: Builder(
+        builder: (BuildContext builderContext) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    widget.contact.name,
+                    style: TextStyle(
+                      fontSize: 24.0,
+                    ),
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: TextField(
-                  controller: _valueController,
-                  style: TextStyle(fontSize: 24.0),
-                  decoration: InputDecoration(labelText: 'Value'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: SizedBox(
-                  width: double.maxFinite,
-                  child: RaisedButton(
-                    child: Text('Transfer'),
-                    onPressed: () {
-                      final double value =
-                          double.tryParse(_valueController.text);
-                      final transactionCreated =
-                          Transaction(value, widget.contact);
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Text(
+                      widget.contact.accountNumber.toString(),
+                      style: TextStyle(
+                        fontSize: 32.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: TextField(
+                      controller: _valueController,
+                      style: TextStyle(fontSize: 24.0),
+                      decoration: InputDecoration(labelText: 'Value'),
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: SizedBox(
+                      width: double.maxFinite,
+                      child: RaisedButton(
+                        child: Text('Transfer'),
+                        onPressed: () {
+                          final double value =
+                              double.tryParse(_valueController.text);
+                          final transactionCreated =
+                              Transaction(value, widget.contact);
 
-                      showDialog(
-                          context: context,
-                          builder: (dialogContext) => TransactionAuthDialog(
-                                onConfirm: (String password) {
-                                  _saveTransaction(
-                                      password, transactionCreated, context);
-                                },
-                              ));
-                    },
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
+                          showDialog(
+                              context: context,
+                              builder: (dialogContext) {
+                                return TransactionAuthDialog(
+                                  onConfirm: (String password) {
+                                    _saveTransaction(
+                                      password,
+                                      transactionCreated,
+                                      context,
+                                      builderContext,
+                                    );
+                                  },
+                                );
+                              });
+                        },
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -90,21 +101,19 @@ class _TransactionFormState extends State<TransactionForm> {
     String password,
     Transaction transactionCreated,
     BuildContext context,
+    BuildContext childContext,
   ) async {
-    _transactionWebClient.save(password, transactionCreated).then(
-      (transaction) {
-        if (transaction != null) {
-          showDialog(
-            context: context,
-            builder: (dialogContext) =>
-                SuccessDialog('Successful transaction!'),
-          ).then((dialog) => Navigator.pop(context));
-        }
-      },
-    ).catchError((exception) {
+    final Transaction transaction = await _transactionWebClient
+        .save(password, transactionCreated)
+        .catchError((exception) {
       showDialog(
-          context: context,
-          builder: (contextDialog) => FailureDialog(exception.message));
+        context: context,
+        builder: (contextDialog) => FailureDialog(exception.message),
+      );
     }, test: (exception) => exception is Exception);
+
+    if (transaction != null) {
+      Navigator.pop(context, 'Transaction successful!');
+    }
   }
 }

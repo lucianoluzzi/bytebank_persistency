@@ -40,8 +40,7 @@ class _ContactsListState extends State<ContactsList> {
                   return _ContactItem(
                     contact,
                     onClick: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => TransactionForm(contact)));
+                      _navigateAndDisplaySuccess(context, contact);
                     },
                   );
                 },
@@ -72,6 +71,15 @@ class _ContactsListState extends State<ContactsList> {
         ),
       ),
     );
+  }
+
+  void _navigateAndDisplaySuccess(BuildContext context, Contact contact) async {
+    final result = await Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => TransactionForm(contact)));
+
+    Scaffold.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text("$result")));
   }
 }
 
