@@ -3,30 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Given Dashboard then display main image',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(_getDashboard());
-    final mainImage = find.byType(Image);
-    expect(mainImage, findsOneWidget);
-  });
+  group('Given Dashboard', () {
+    testWidgets('then display main image', (WidgetTester tester) async {
+      await tester.pumpWidget(_getDashboard());
+      final mainImage = find.byType(Image);
+      expect(mainImage, findsOneWidget);
+    });
 
-  testWidgets('Given Dashboard, then should display transfer FeatureItem',
-      (tester) async {
-    await tester.pumpWidget(_getDashboard());
-    final transferFeatureItem = find.byWidgetPredicate((widget) =>
-        featureItemMatcher(widget, 'Transfer', Icons.monetization_on));
+    testWidgets('then should display transfer FeatureItem', (tester) async {
+      await tester.pumpWidget(_getDashboard());
+      final transferFeatureItem = find.byWidgetPredicate((widget) =>
+          featureItemMatcher(widget, 'Transfer', Icons.monetization_on));
 
-    expect(transferFeatureItem, findsOneWidget);
-  });
+      expect(transferFeatureItem, findsOneWidget);
+    });
 
-  testWidgets(
-      'Given Dashboard, then should display transaction feed FeatureItem',
-      (tester) async {
-    await tester.pumpWidget(_getDashboard());
-    final transactionFeedFeatureItem = find.byWidgetPredicate((widget) =>
-        featureItemMatcher(widget, 'Transaction feed', Icons.description));
+    testWidgets('then should display transaction feed FeatureItem',
+        (tester) async {
+      await tester.pumpWidget(_getDashboard());
+      final transactionFeedFeatureItem = find.byWidgetPredicate((widget) =>
+          featureItemMatcher(widget, 'Transaction feed', Icons.description));
 
-    expect(transactionFeedFeatureItem, findsOneWidget);
+      expect(transactionFeedFeatureItem, findsOneWidget);
+    });
   });
 }
 
