@@ -6,13 +6,16 @@ import 'package:bytebank_persistency/widgets/progress.dart';
 import 'package:flutter/material.dart';
 
 class ContactsList extends StatefulWidget {
+  final ContactDAO contactDAO;
+
+  ContactsList({@required this.contactDAO});
+
   @override
   _ContactsListState createState() => _ContactsListState();
 }
 
 class _ContactsListState extends State<ContactsList> {
   List<Contact> _contacts = List();
-  final ContactDAO _contactDAO = ContactDAO();
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,7 @@ class _ContactsListState extends State<ContactsList> {
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: List(),
-        future: _contactDAO.findAll(),
+        future: widget.contactDAO.findAll(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -77,9 +80,11 @@ class _ContactsListState extends State<ContactsList> {
     final result = await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => TransactionForm(contact)));
 
-    Scaffold.of(context)
-      ..removeCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text("$result")));
+    if (result != null) {
+      Scaffold.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text("$result")));
+    }
   }
 }
 

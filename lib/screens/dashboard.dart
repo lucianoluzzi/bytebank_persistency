@@ -1,8 +1,13 @@
+import 'package:bytebank_persistency/database/dao/contact_dao.dart';
 import 'package:bytebank_persistency/screens/contacts_list.dart';
 import 'package:bytebank_persistency/screens/transactions_list.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatelessWidget {
+  final ContactDAO contactDAO;
+
+  Dashboard({@required this.contactDAO});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,14 +60,14 @@ class Dashboard extends StatelessWidget {
 
   void _showTransactionsList(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => TransactionsList()),
+      MaterialPageRoute(builder: (context) => TransactionsList()),
     );
   }
 
   void _showContactsList(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => ContactsList()),
+      MaterialPageRoute(
+          builder: (context) => ContactsList(contactDAO: contactDAO)),
     );
   }
 }
