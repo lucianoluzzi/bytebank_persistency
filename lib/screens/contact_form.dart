@@ -3,13 +3,16 @@ import 'package:bytebank_persistency/models/contact.dart';
 import 'package:flutter/material.dart';
 
 class ContactForm extends StatefulWidget {
+  final ContactDAO contactDAO;
+
+  ContactForm({@required this.contactDAO});
+
   @override
   _ContactFormState createState() => _ContactFormState();
 }
 
 class _ContactFormState extends State<ContactForm> {
   final TextEditingController _nameController = TextEditingController();
-  final ContactDAO _contactDAO = ContactDAO();
 
   final TextEditingController _accountNumberController =
       TextEditingController();
@@ -58,9 +61,7 @@ class _ContactFormState extends State<ContactForm> {
                         int.tryParse(_accountNumberController.text);
                     if (accountNumber != null) {
                       final Contact contact = Contact(0, name, accountNumber);
-                      _contactDAO
-                          .save(contact)
-                          .then((id) => Navigator.pop(context));
+                      _saveContact(contact, context);
                     }
                   },
                 ),
@@ -70,5 +71,10 @@ class _ContactFormState extends State<ContactForm> {
         ),
       ),
     );
+  }
+
+  void _saveContact(Contact contact, BuildContext context) async {
+    await widget.contactDAO.save(contact);
+    Navigator.pop(context);
   }
 }

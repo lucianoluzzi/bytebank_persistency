@@ -60,7 +60,7 @@ class _ContactsListState extends State<ContactsList> {
           Navigator.of(context)
               .push(
             MaterialPageRoute(
-              builder: (context) => ContactForm(),
+              builder: (context) => ContactForm(contactDAO: widget.contactDAO),
             ),
           )
               .then((newContact) {
