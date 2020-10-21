@@ -1,11 +1,9 @@
 import 'package:bytebank_persistency/database/dao/contact_dao.dart';
 import 'package:bytebank_persistency/models/contact.dart';
+import 'package:bytebank_persistency/widgets/dependencies.dart';
 import 'package:flutter/material.dart';
 
 class ContactForm extends StatefulWidget {
-  final ContactDAO contactDAO;
-
-  ContactForm({@required this.contactDAO});
 
   @override
   _ContactFormState createState() => _ContactFormState();
@@ -19,6 +17,8 @@ class _ContactFormState extends State<ContactForm> {
 
   @override
   Widget build(BuildContext context) {
+    final dependencies = AppDependencies.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('New contact'),
@@ -61,7 +61,7 @@ class _ContactFormState extends State<ContactForm> {
                         int.tryParse(_accountNumberController.text);
                     if (accountNumber != null) {
                       final Contact contact = Contact(0, name, accountNumber);
-                      _saveContact(contact, context);
+                      _saveContact(dependencies.contactDAO, contact, context);
                     }
                   },
                 ),
@@ -73,8 +73,8 @@ class _ContactFormState extends State<ContactForm> {
     );
   }
 
-  void _saveContact(Contact contact, BuildContext context) async {
-    await widget.contactDAO.save(contact);
+  void _saveContact(ContactDAO contactDAO, Contact contact, BuildContext context) async {
+    await contactDAO.save(contact);
     Navigator.pop(context);
   }
 }

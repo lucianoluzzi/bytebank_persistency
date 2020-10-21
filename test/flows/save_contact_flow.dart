@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bytebank_persistency/main.dart';
 import 'package:bytebank_persistency/models/contact.dart';
 import 'package:bytebank_persistency/screens/contact_form.dart';
@@ -9,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-import 'dashboard_widget_test.dart';
-import 'mocks.dart';
+import '../mocks/mocks.dart';
+import '../widgets/dashboard_widget_test.dart';
 
 void main() {
   testWidgets('Should save a contact', (tester) async {
@@ -40,11 +38,13 @@ void main() {
     final contactForm = find.byType(ContactForm);
     expect(contactForm, findsOneWidget);
 
-    final nameTextField = find.byWidgetPredicate((widget) => _contactFormLabelMatcher(widget, 'Full name'));
+    final nameTextField = find.byWidgetPredicate(
+        (widget) => _contactFormLabelMatcher(widget, 'Full name'));
     expect(nameTextField, findsOneWidget);
     await tester.enterText(nameTextField, 'Luzzi');
 
-    final accountNumberTextField = find.byWidgetPredicate((widget) => _contactFormLabelMatcher(widget, 'Account number'));
+    final accountNumberTextField = find.byWidgetPredicate(
+        (widget) => _contactFormLabelMatcher(widget, 'Account number'));
     expect(accountNumberTextField, findsOneWidget);
     await tester.enterText(accountNumberTextField, '12345');
 
@@ -59,7 +59,6 @@ void main() {
     expect(contactsListBack, findsOneWidget);
 
     verify(mockContactDAO.findAll());
-    
   });
 }
 
