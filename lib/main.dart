@@ -1,23 +1,30 @@
 import 'package:bytebank_persistency/database/dao/contact_dao.dart';
+import 'package:bytebank_persistency/network/web_client/transaction_webclient.dart';
 import 'package:bytebank_persistency/widgets/dependencies.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/dashboard.dart';
 
 void main() {
-  runApp(ByteBank(contactDAO: ContactDAO()));
+  runApp(ByteBank(
+    contactDAO: ContactDAO(),
+    transactionWebClient: TransactionWebClient(),
+  ));
 }
 
 class ByteBank extends StatelessWidget {
   final ContactDAO contactDAO;
+  final TransactionWebClient transactionWebClient;
 
-  ByteBank({@required this.contactDAO});
+  ByteBank({
+    @required this.contactDAO,
+    @required this.transactionWebClient,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final dependencies = AppDependencies.of(context);
-
     return AppDependencies(
+      transactionWebClient: transactionWebClient,
       contactDAO: contactDAO,
       child: MaterialApp(
           theme: ThemeData(

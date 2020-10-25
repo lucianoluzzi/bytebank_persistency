@@ -13,7 +13,13 @@ import '../widgets/dashboard_widget_test.dart';
 void main() {
   testWidgets('Should save a contact', (tester) async {
     final mockContactDAO = MockContactDao();
-    await tester.pumpWidget(ByteBank(contactDAO: mockContactDAO));
+    final mockWebClient = MockTransactionWebClient();
+    await tester.pumpWidget(
+      ByteBank(
+        contactDAO: mockContactDAO,
+        transactionWebClient: mockWebClient,
+      ),
+    );
 
     final dashboard = find.byType(Dashboard);
     expect(dashboard, findsOneWidget);
@@ -39,12 +45,12 @@ void main() {
     expect(contactForm, findsOneWidget);
 
     final nameTextField = find.byWidgetPredicate(
-        (widget) => _contactFormLabelMatcher(widget, 'Full name'));
+            (widget) => _contactFormLabelMatcher(widget, 'Full name'));
     expect(nameTextField, findsOneWidget);
     await tester.enterText(nameTextField, 'Luzzi');
 
     final accountNumberTextField = find.byWidgetPredicate(
-        (widget) => _contactFormLabelMatcher(widget, 'Account number'));
+            (widget) => _contactFormLabelMatcher(widget, 'Account number'));
     expect(accountNumberTextField, findsOneWidget);
     await tester.enterText(accountNumberTextField, '12345');
 

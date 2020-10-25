@@ -1,20 +1,20 @@
 import 'package:bytebank_persistency/models/transaction.dart';
-import 'package:bytebank_persistency/network/web_client/transaction_webclient.dart';
 import 'package:bytebank_persistency/widgets/centered_message.dart';
+import 'package:bytebank_persistency/widgets/dependencies.dart';
 import 'package:bytebank_persistency/widgets/progress.dart';
 import 'package:flutter/material.dart';
 
 class TransactionsList extends StatelessWidget {
-  final TransactionWebClient _transactionWebClient = TransactionWebClient();
-
   @override
   Widget build(BuildContext context) {
+    final dependencies = AppDependencies.of(context);
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Transactions'),
         ),
         body: FutureBuilder<List<Transaction>>(
-          future: _transactionWebClient.findAll(),
+          future: dependencies.transactionWebClient.findAll(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
